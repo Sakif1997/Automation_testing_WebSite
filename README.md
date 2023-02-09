@@ -140,7 +140,7 @@ Change or add dependencies
 ## Dynamicly design for test cases
 ### Browser Setup
 create a package under src/test/java and under the package(Utilites) create a class(BrowserSetup)
->>>>> pic
+![folders](https://user-images.githubusercontent.com/45315685/217946279-cc28e9f0-a8f6-472c-9857-68763b119d1d.PNG)
 
 This code contain to setup browser and manage window for generate testing in automated way
 
@@ -194,11 +194,13 @@ public class BrowserSetup {
 	
 }
  ``` 
+ ![BrowserSetup](https://user-images.githubusercontent.com/45315685/217946859-7ee679bc-5655-49c1-88cf-78dfd6a66b87.PNG)
+
 
 ### Pages and testcases
 #### Pages
 create a package under src/test/java and under the package(Pages) create some classes which will contain page related objects and methods to generate testcases dynamicly
->>>pic
+![foldersPages](https://user-images.githubusercontent.com/45315685/217947006-22a99141-f664-4b6c-9cc8-48ebcc45c905.PNG)
 
 It will be easier to understand if we named the class as page name or feature we will be testing for
 #### BasePage : contain methods(findElement,click,wait, write , allureScreenshot)
@@ -242,12 +244,14 @@ public class BasePage{
 
 }
  ``` 
+ ![BasePage](https://user-images.githubusercontent.com/45315685/217947122-bdcd77dd-f911-48d3-843c-dc9ab08e3b42.PNG)
 
- >>>pic
 
  ### Extends BasePage classes
  #### LogInPage 
 login page location, login form fillup with valid or invalid credentials
+![loginPage](https://user-images.githubusercontent.com/45315685/217947563-f6bcf3ee-994c-46e8-a240-8ae3e3841132.PNG)
+
 
 ```ruby
 package pages;
@@ -273,6 +277,8 @@ public class LogInPage extends BasePage{
 >>pic
  #### DarazHomePage 
  loginbutton location 
+ ![HomePage](https://user-images.githubusercontent.com/45315685/217947653-a699edbf-c625-4d7b-a7ec-b5eca9f3caf3.PNG)
+
 ```ruby
 package pages;
 
@@ -292,6 +298,8 @@ public class DarazHomePage extends BasePage{
 
 #### HelpCenterPage
 CustomerCare to HelpCenter page
+![Helpcenter](https://user-images.githubusercontent.com/45315685/217948061-74200a15-cf5d-4ccf-b655-37612e051aa9.PNG)
+
 ```ruby
 package pages;
 
