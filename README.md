@@ -137,3 +137,183 @@ Change or add dependencies
 </project>
  ``` 
 
+## Dynamicly design for test cases
+### Browser Setup
+create a package under src/test/java and under the package(Utilites) create a class(BrowserSetup)
+>>>>> pic
+
+This code contain to setup browser and manage window for generate testing in automated way
+
+ ```ruby
+package Utilities;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeSuite;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+
+public class BrowserSetup {
+	private static String browserName = System.getProperty("browser","chrome");
+	private static final ThreadLocal<WebDriver> Driverlocal = new ThreadLocal<>();//to focus individual 
+	public static WebDriver getDriver() {
+		return Driverlocal.get();
+	}
+	public static void setDriver(WebDriver driver) { 
+		//filename.threadlocalname.set()
+		BrowserSetup.Driverlocal.set(driver);
+	}
+	public static WebDriver getBrowser(String browserName) {
+		switch(browserName.toLowerCase()){
+		case "chrome":
+				WebDriverManager.chromedriver().setup();
+				return new ChromeDriver();
+		case "Edge":
+				WebDriverManager.edgedriver().setup();
+				return new EdgeDriver();
+		case "firefox":
+				WebDriverManager.firefoxdriver().setup();
+				return new FirefoxDriver();
+		default:
+			throw new RuntimeException("Browser not found");
+		}	
+	}
+	@BeforeSuite
+	public static synchronized void setBrowser() {
+		WebDriver webdriver = getBrowser(browserName);
+		webdriver.manage().window().maximize();
+		setDriver(webdriver);
+	}
+	@AfterSuite
+	public static synchronized void quitBrowser() {
+		getDriver().quit();
+	}
+	
+}
+ ``` 
+
+### Pages and testcases
+#### Pages
+create a package under src/test/java and under the package(Pages) create some classes which will contain page related objects and methods to generate testcases dynamicly
+>>>pic
+
+It will be easier to understand if we named the class as page name or feature we will be testing for
+#### BasePage : contain methods(findElement,click,wait, write , allureScreenshot)
+ ```ruby
+ package pages;
+
+import static Utilities.BrowserSetup.getDriver;
+
+import java.io.ByteArrayInputStream;
+import java.time.Duration;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import io.qameta.allure.Allure;
+public class BasePage{
+	public WebElement getElement(By locator) {
+		return getDriver().findElement(locator);
+	}
+	public void clickOnElement(By locator) {
+		getElement(locator).click();
+	}
+	public String getElementText(By locator) {
+		return getElement(locator).getText();
+	}
+	public void clickonWaitelement(By locator) {
+		WebDriverWait waitElement = new WebDriverWait(getDriver(),Duration.ofSeconds(20));
+		WebElement  element= waitElement.until(ExpectedConditions.elementToBeClickable(locator));
+		element.click();	
+	}
+	public void write(By locator, String text) {
+		getElement(locator).sendKeys(text);
+	}
+	public void TakeScreenShot(String name) {
+		Allure.addAttachment(name, new ByteArrayInputStream(((TakesScreenshot)getDriver()).getScreenshotAs(OutputType.BYTES)));
+	}
+
+}
+ ``` 
+
+ >>>pic
+
+ ### Extends BasePage classes
+ #### LogInPage 
+login page location, login form fillup with valid or invalid credentials
+
+```ruby
+package pages;
+
+import org.openqa.selenium.By;
+
+public class LogInPage extends BasePage{
+	public String LOGINPAGETITLE ="Daraz.com.bd: Online Shopping Bangladesh - Mobiles, Tablets, Home Appliances, TV, Audio &amp; More";
+	public By emailfield = By.xpath("//input[@type='text']");
+	public By passField =By.xpath("//input[@type='password']");
+	public By loginButton =By.xpath("//button[contains(text(),'LOGIN')]");
+	public void loginFormFillup(String email, String pass) {
+		write(emailfield, email);
+		write(passField,pass);
+		TakeScreenShot("Invalid Inputs");
+
+		clickOnElement(loginButton);
+		TakeScreenShot("Invalid input outcome");
+	}
+
+}
+ ``` 
+>>pic
+ #### DarazHomePage 
+ loginbutton location 
+```ruby
+package pages;
+
+import org.openqa.selenium.By;
+
+public class DarazHomePage extends BasePage{
+	public By LOGINSIGNUPBUTTON = By.xpath("//a[contains(text(),'Signup / Login')]");
+
+	
+	public void clickLogin(){
+		clickOnElement(LOGINSIGNUPBUTTON);
+		TakeScreenShot("login");
+	}
+
+}
+ ``` 
+
+#### HelpCenterPage
+CustomerCare to HelpCenter page
+```ruby
+package pages;
+
+import org.openqa.selenium.By;
+
+
+public class HelpCenter extends BasePage{
+	public By CustomerCareOption = By.xpath("//span[contains(text(),'CUSTOMER CARE')]");
+	public By HelpCenterPage = By.xpath("//a[contains(text(),'Help Center')]");
+	public String helpCenterPageTitle ="Daraz.com.bd: Online Shopping Bangladesh - Mobiles, Tablets, Home Appliances, TV, Audio &amp; More";
+	public void helpCenter() {
+		clickOnElement(CustomerCareOption);
+		TakeScreenShot("Homepage Customer Care Option");
+		clickonWaitelement(HelpCenterPage);
+		TakeScreenShot("HelpcenterPage");
+
+		
+	}
+	
+}
+
+
+ ``` 
+
+
