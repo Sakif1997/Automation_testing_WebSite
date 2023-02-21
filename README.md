@@ -322,6 +322,75 @@ public class HelpCenter extends BasePage{
 }
 
 
+
+## TestCases
+
+This code manage window for generate testing in automated way and Also seperate form of testing pages which make easier to Understand the process 
+
+
+
+
+### HelpCenterOption 
+```ruby
+package testCases;
+
+import org.testng.annotations.Test;
+
+import Utilities.BrowserSetup;
+import io.qameta.allure.Description;
+import pages.HelpCenter;
+
+
+public class HelpCenterOption extends BrowserSetup{
+	
+	HelpCenter helpcenter = new HelpCenter();
+	@Test (description = "Customer Care Route" )
+	@Description("HopePage to Cutomer Care Option")
+	public void DarazCustomerCare() throws InterruptedException{
+		getDriver().get("https://www.daraz.com.bd/");
+		helpcenter.helpCenter();
+	
+		Thread.sleep(4000);
+		
+	}
+	
+
+}
  ``` 
+ ![HelpCenterToPage](https://user-images.githubusercontent.com/45315685/220350668-cca8770f-c440-4dfd-b163-9732ab07e3a5.png)
+
+### loginPage
+```ruby
+package testCases;
+
+import static org.testng.Assert.assertEquals;
+
+import org.testng.annotations.Test;
+
+import Utilities.BrowserSetup;
+import io.qameta.allure.Description;
+import pages.DarazHomePage;
+import pages.LogInPage;
+
+public class logInTest extends BrowserSetup {
+	DarazHomePage darazHomePage = new DarazHomePage();
+	LogInPage logInPage =new LogInPage();
+	@Test(description = "Login Page Route")
+	@Description ("Invalid entities Response in Login page")
+	public void logInPageTitle() throws InterruptedException {
+		getDriver().get("https://www.daraz.com.bd/");
+		darazHomePage.clickLogin();
+		Thread.sleep(2000);
+		assertEquals(getDriver().getTitle(),logInPage.LOGINPAGETITLE);
+		System.out.println(getDriver().getTitle());
+		Thread.sleep(2000);
+		logInPage.loginFormFillup("Sakifrockz@gmail.com", "1235");
+		Thread.sleep(5000);
+	}
+	
+
+}
+ ``` 
+![login](https://user-images.githubusercontent.com/45315685/220350849-429c4714-f5d4-4323-b406-01f0e4109bc3.PNG)
 
 
